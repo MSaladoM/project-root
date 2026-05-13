@@ -1,12 +1,20 @@
 data:
-  random_state: 42
-  raw_path: data/raw/WA_Fn-UseC_-Telco-Customer-Churn.csv
+  raw_path: "data/raw/WA_Fn-UseC_-Telco-Customer-Churn.csv"
+
+split:
   test_size: 0.2
+  random_state: 42
+
 model:
-  name: LogisticRegression
-  params:
-    max_depth: 10
-    n_estimators: 100
-    random_state: 42
+  name: "LogisticRegression" # Ahora el interruptor está en Regresión Logística
+  
+  # --- Parámetros para Random Forest ---
+  n_estimators: 100
+  max_depth: 10
+  
+  # --- Parámetros para Regresión Logística ---
+  C: 1.0
+  max_iter: 1000
+
 paths:
-  model_save: models/model.pkl
+  model_save: "models/model.pkl"
