@@ -82,3 +82,4 @@ def load_and_preprocess_data(config):
     print("Preprocesamiento completado")
 
     return X_train, X_test, y_train, y_test
+
