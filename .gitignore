@@ -205,4 +205,26 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
-project-root/
+
+
+# Dataset
+data/raw/*.csv
+
+# Processed data
+data/processed/*.csv
+
+# Trained models
+models/*.pkl
+
+# VS Code
+.vscode/
+
+# MacOS
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+
+# Serialized ML artifacts
+*.joblib
