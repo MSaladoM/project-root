@@ -11,3 +11,5 @@ def test_get_model_random_forest():
     }
     model = get_model(config)
     assert str(type(model)) == "<class 'sklearn.ensemble._forest.RandomForestClassifier'>"
+
+
