@@ -29,7 +29,7 @@ def load_and_preprocess_data(config):
 
     print("Dataset cargado correctamente")
     print(df.head())
-
+    print(df.info())
     # -----------------------------
     # Limpieza de TotalCharges
     # -----------------------------
@@ -97,6 +97,6 @@ def load_and_preprocess_data(config):
     )
 
     print("Preprocesamiento completado")
-
+    print(df.info())
     return X_train, X_test, y_train, y_test
 
