@@ -15,5 +15,6 @@ model:
 paths:
   data_path: "data/raw/WA_Fn-UseC_-Telco-Customer-Churn.csv"
   model_save: "models/model.pkl"
+  results_path: "models/experiment_results.json"
 
   

@@ -1,3 +1,9 @@
+# Adiciones posteriores
+*.json
+*.pkl
+.env
+models/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
