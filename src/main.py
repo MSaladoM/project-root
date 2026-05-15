@@ -1,7 +1,7 @@
 import yaml
-from src.data_loader import load_and_preprocess_data
+from data_loader import load_and_preprocess_data
 # Importamos la función unificada de model_trainer.py
-from src.model_trainer import train_and_save_model 
+from model_trainer import train_and_save_model 
 
 def main():
     # 1. Cargar configuración

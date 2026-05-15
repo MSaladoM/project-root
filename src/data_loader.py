@@ -1,3 +1,6 @@
+import os
+import shutil
+import kagglehub
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
@@ -6,6 +9,20 @@ def load_and_preprocess_data(config):
 
     # Ruta del dataset
     data_path = config["paths"]["data_path"]
+
+    if not os.path.exists(data_path):
+        print(f"Dataset no encontrado en {data_path}. Descargando de Kaggle...")
+        download_path = kagglehub.dataset_download(config["data"]["kaggle_dataset"])
+        print("Path to downloaded dataset files:", download_path)
+        
+        # Crear la carpeta si no existe
+        os.makedirs(os.path.dirname(data_path), exist_ok=True)
+        
+        # Copiar el archivo CSV a la ruta definida en config
+        for file in os.listdir(download_path):
+            if file.endswith(".csv"):
+                shutil.copy(os.path.join(download_path, file), data_path)
+                break
 
     # Cargar dataset
     df = pd.read_csv(data_path)
