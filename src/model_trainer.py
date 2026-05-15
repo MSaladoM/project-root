@@ -1,44 +1,90 @@
 import joblib
+
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.linear_model import LogisticRegression
+
+from sklearn.metrics import (
+    accuracy_score,
+    recall_score,
+    f1_score,
+    classification_report
+)
 
 
-def train_model(X_train, y_train, config):
+def get_model(config):
     """
-    Entrena el modelo RandomForest.
+    Fábrica de modelos.
+    Permite elegir el modelo desde params.yaml
     """
 
-    model = RandomForestClassifier(
-        n_estimators=config["model"]["n_estimators"],
-        max_depth=config["model"]["max_depth"],
-        random_state=config["data"]["random_state"]
-    )
+    model_name = config["model"]["name"]
 
-    model.fit(X_train, y_train)
+    if model_name == "RandomForest":
+
+        model = RandomForestClassifier(
+            n_estimators=config["model"]["n_estimators"],
+            max_depth=config["model"]["max_depth"],
+            random_state=config["data"]["random_state"]
+        )
+
+    elif model_name == "LogisticRegression":
+
+        model = LogisticRegression(
+            C=config["model"]["C"],
+            max_iter=config["model"]["max_iter"],
+            random_state=config["data"]["random_state"]
+        )
+
+    else:
+        raise ValueError(f"Modelo no soportado: {model_name}")
 
     return model
 
 
-def evaluate_model(model, X_test, y_test):
+def train_and_save_model(
+    X_train,
+    y_train,
+    X_test,
+    y_test,
+    config
+):
     """
-    Evalúa el modelo.
+    Entrena, evalúa y guarda el modelo.
     """
 
+    # Crear modelo
+    model = get_model(config)
+
+    # Entrenar
+    model.fit(X_train, y_train)
+
+    # Predicciones
     predictions = model.predict(X_test)
 
+    # Métricas
     accuracy = accuracy_score(y_test, predictions)
+    recall = recall_score(y_test, predictions)
+    f1 = f1_score(y_test, predictions)
 
     print(f"\nAccuracy: {accuracy:.4f}")
+    print(f"Recall: {recall:.4f}")
+    print(f"F1-Score: {f1:.4f}")
 
     print("\nClassification Report:")
     print(classification_report(y_test, predictions))
 
+    # Guardar modelo
+    model_path = config["paths"]["model_save"]
 
-def save_model(model, path):
-    """
-    Guarda el modelo entrenado.
-    """
+    joblib.dump(model, model_path)
 
-    joblib.dump(model, path)
+    print(f"\nModelo guardado en: {model_path}")
 
-    print(f"\nModelo guardado en: {path}")
+    # Retornar métricas
+    metrics = {
+        "accuracy": accuracy,
+        "recall": recall,
+        "f1_score": f1
+    }
+
+    return metrics

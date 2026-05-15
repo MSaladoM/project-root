@@ -1,41 +1,33 @@
 import yaml
-
 from src.data_loader import load_and_preprocess_data
-
-from src.model_trainer import (
-    train_model,
-    evaluate_model,
-    save_model
-)
-
+# Importamos la función unificada de model_trainer.py
+from src.model_trainer import train_and_save_model 
 
 def main():
-
-    # Cargar configuración
+    # 1. Cargar configuración
     with open("config/params.yaml", "r") as file:
         config = yaml.safe_load(file)
 
     print("Configuración cargada correctamente")
 
-    # Cargar y preprocesar datos
+    # 2. Cargar y preprocesar datos
     X_train, X_test, y_train, y_test = load_and_preprocess_data(config)
 
     print("\nShapes:")
-    print(X_train.shape)
-    print(X_test.shape)
+    print(f"Train: {X_train.shape}")
+    print(f"Test: {X_test.shape}")
 
-    # Entrenar modelo
-    model = train_model(X_train, y_train, config)
-
-    # Evaluar modelo
-    evaluate_model(model, X_test, y_test)
-
-    # Guardar modelo
-    save_model(
-        model,
-        config["paths"]["model_save"]
+    # 3. Entrenar, Evaluar y Guardar
+    metrics = train_and_save_model(
+        X_train, 
+        y_train, 
+        X_test, 
+        y_test, 
+        config
     )
 
+    print("\n--- Proceso de ML completado con éxito ---")
+    print(f"Resultado final: {metrics}")
 
 if __name__ == "__main__":
     main()
