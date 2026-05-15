@@ -122,3 +122,15 @@ churn-mlops-project/
 
 
 ¡Éxito con la clase! Es un ejercicio excelente para ver quién realmente entiende la integración de sistemas. 🚀
+
+---
+
+## 👥 Equipo y Reflexiones Individuales
+
+En esta sección se detalla el desempeño de cada integrante, los desafíos técnicos encontrados y el uso de herramientas de apoyo.
+
+### 1. Christopher Josue Medrano Gonzalez
+* **Rol:** **ML Engineer (src/model_trainer.py)** 
+* **Reflexión:** > *Sincronizar el trabajo que todos en el equipo estabamos realizando fue un reto, ya que la implementacion de esta actividad era una cadena de tareas que tenian que ver unas con otras, por lo que el orden de su ejecucion era importante e indispensable, cuidar que haciamos primero y que despues.*
+* **Uso de LLM:** > *Utilicé Gemini/ChatGPT para optimizar la estructura de la fábrica de modelos y depurar errores en los comandos de Git al manejar el upstream.*
+------
