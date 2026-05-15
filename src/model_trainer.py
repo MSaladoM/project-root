@@ -73,9 +73,12 @@ def train_and_save_model(
     print("\nClassification Report:")
     print(classification_report(y_test, predictions))
 
+    import os
+    
     # Guardar modelo
     model_path = config["paths"]["model_save"]
 
+    os.makedirs(os.path.dirname(model_path), exist_ok=True)
     joblib.dump(model, model_path)
 
     print(f"\nModelo guardado en: {model_path}")
