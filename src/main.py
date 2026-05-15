@@ -2,6 +2,7 @@ import yaml
 from data_loader import load_and_preprocess_data
 # Importamos la función unificada de model_trainer.py
 from model_trainer import train_and_save_model 
+from experiment_logger import log_experiment 
 
 def main():
     # 1. Cargar configuración
@@ -25,6 +26,9 @@ def main():
         y_test, 
         config
     )
+
+    # 4. Guardar resultados
+    log_experiment(config, metrics)
 
     print("\n--- Proceso de ML completado con éxito ---")
     print(f"Resultado final: {metrics}")
