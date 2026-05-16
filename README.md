@@ -1,124 +1,69 @@
-# 📡 Proyecto Colaborativo MLOps: Predicción de Churn (Abandono de Clientes)
 
-## 🎯 Objetivo del Proyecto
-Construir un pipeline de Machine Learning modular, reproducible y colaborativo para predecir si un cliente de telecomunicaciones abandonará el servicio (**Churn**).
+# 📉 Telco Customer Churn - Pipeline MLOps
 
-El proyecto simula un entorno laboral real donde **4 roles especializados** deben integrar su código en un solo repositorio usando Git.
+Este proyecto implementa un pipeline de Machine Learning Operations (MLOps) de extremo a extremo para predecir el abandono de clientes (Churn) en una empresa de telecomunicaciones. 
 
----
+El proyecto está diseñado bajo buenas prácticas de ingeniería de software, separando la configuración, la carga de datos, el entrenamiento del modelo y la inferencia en módulos distintos, todo orquestado a través de un archivo YAML centralizado.
 
-## 📂 El Dataset
-Todos los equipos trabajarán con el dataset **Telco Customer Churn**.
+## 🗂️ Estructura del Proyecto
 
-*   **Fuente:** [Kaggle - Telco Customer Churn](https://www.kaggle.com/blastchar/telco-customer-churn)
-*   **Archivo:** `WA_Fn-UseC_-Telco-Customer-Churn.csv`
-*   **Problema:** Clasificación Binaria (¿El cliente se va? `Yes`/`No`)
-*   **Instrucción Importante:**
-    1.  Descarguen el CSV.
-    2.  Guárdenlo en la carpeta `data/raw/`.
-    3.  **NO suban el CSV a Git** (ya está configurado en `.gitignore` para evitar subir archivos pesados). Cada alumno debe descargarlo localmente.
+El proyecto sigue una arquitectura modular:
 
----
+* **`config/params.yaml`**: Archivo central que controla las rutas, las divisiones de datos y los hiperparámetros de los modelos sin necesidad de tocar el código de Python.
+* **`src/data_loader.py`**: Se encarga de cargar los datos crudos, limpiar valores nulos (mediana en `TotalCharges`), aplicar mapeos binarios y One-Hot Encoding, para finalmente guardar los datos procesados.
+* **`src/model_trainer.py`**: "Fábrica de modelos" que lee la configuración, inicializa dinámicamente el algoritmo seleccionado (Random Forest o Regresión Logística), lo entrena y guarda el archivo `.pkl`.
+* **`src/main.py`**: Archivo orquestador que ejecuta el pipeline completo paso a paso.
+* **`src/predict.py`**: Script de simulación de producción para realizar inferencias sobre nuevos clientes con manejo de errores.
+* **`tests/test_pipeline.py`**: Pruebas unitarias para asegurar la integridad de los datos procesados y las métricas devueltas por el modelo.
 
-## 👥 Roles y Responsabilidades (Equipos de 4)
+## 🚀 Cómo ejecutar el proyecto
 
-Cada miembro del equipo es responsable de un módulo específico. Deben definir sus "contratos de interface" (nombres de funciones y tipos de datos que pasan entre módulos) antes de empezar a codificar.
+Asegúrate de estar posicionado en la raíz del proyecto (`D:\project-root\churn_mlops_project>`) y de tener instalado `pandas`, `scikit-learn`, `pyyaml` y `joblib`.
 
-### 1. 👷 Data Engineer (`src/data_loader.py`)
-**Tu misión:** Transformar datos brutos y sucios en datos limpios listos para entrenar.
+**1. Entrenar el Modelo (Pipeline Completo)**
+Para ejecutar la limpieza de datos y el entrenamiento del modelo definido en `params.yaml`:
+```bash
+python -m src.main
 
-*   **Tareas Críticas:**
-    *   Cargar el CSV desde `data/raw/`.
-    *   **Limpieza:** La columna `TotalCharges` tiene espacios vacíos `" "` en lugar de nulos. Debes convertirla a numérico y manejar los NaN resultantes (ej. llenar con mediana o 0).
-    *   **Preprocesamiento:** Eliminar `customerID`. Codificar variables binarias (`gender`, `Partner`, `Churn`) de Texto a 0/1.
-    *   **División:** Separar en Train/Test usando `test_size` y `random_state` definidos en `config/params.yaml`.
-*   **Entregable:** Función `load_and_preprocess_data(config)` que retorna `X_train, X_test, y_train, y_test`.
-
-### 2. 🧠 ML Engineer (`src/model_trainer.py`)
-**Tu misión:** Experimentar con algoritmos y guardar el mejor modelo.
-
-*   **Tareas Críticas:**
-    *   Implementar una "Fábrica de Modelos" que permita elegir entre al menos **dos algoritmos** (ej. `RandomForest` y `SVM` o `LogisticRegression`) según el config.
-    *   Entrenar el modelo con los datos recibidos.
-    *   Calcular métricas clave: **Accuracy**, **Recall** (crítico para Churn) y **F1-Score**.
-    *   Guardar el modelo entrenado en la carpeta `models/` usando `joblib`.
-*   **Entregable:** Función `train_and_save_model(X_train, y_train, X_test, y_test, config)` que guarda el `.pkl` y retorna un diccionario de métricas.
-
-### 3. ⚙️ MLOps Engineer (`src/main.py` y `config/`)
-**Tu misión:** Orquestar el flujo y gestionar la configuración externa.
-
-*   **Tareas Críticas:**
-    *   Crear y mantener `config/params.yaml`. Debe incluir:
-        *   Parámetros de datos (`test_size`, `random_state`).
-        *   Parámetros del modelo (`model_name`, `n_estimators`, `C`, `kernel`, etc.).
-        *   Rutas de salida.
-    *   Escribir `src/main.py`: Este script debe importar las funciones del Data Engineer y del ML Engineer y ejecutarlas en orden.
-    *   Asegurar que el proyecto corra con el comando: `python -m src.main`.
-*   **Entregable:** Un `main.py` funcional que lea el YAML y ejecute el pipeline completo sin errores de importación.
-
-### 4. 🛡️ QA & Production Engineer (`src/predict.py` y `tests/`)
-**Tu misión:** Validar que el sistema funcione y preparar la inferencia para nuevos datos.
-
-*   **Tareas Críticas:**
-    *   Crear `src/predict.py`: Un script que cargue el modelo guardado (`models/model.pkl`) y permita predecir la clase de un nuevo cliente (ej. pasando una lista de características manualmente).
-    *   Manejo de Errores: Si el modelo no existe, el script debe dar un mensaje claro, no un error críptico.
-    *   Escribir tests básicos en `tests/test_pipeline.py` (ej. verificar que `load_data` no retorne DataFrames vacíos).
-*   **Entregable:** Un script de predicción robusto y al menos 2 tests unitarios pasando.
-
----
-
-## 🚀 Flujo de Trabajo con Git
-
-1.  **Clonar:** `git clone <url-del-repo-del-equipo>`
-2.  **Ramas:** Cada alumno crea su rama:
-    *   `git checkout -b feature/data-engineer`
-    *   `git checkout -b feature/ml-engineer`
-    *   `git checkout -b feature/mlops-engineer`
-    *   `git checkout -b feature/qa-engineer`
-3.  **Desarrollo:** Trabajen en paralelo. Hagan commits frecuentes.
-4.  **Integración:**
-    *   Cuando terminen, hagan `git push` de sus ramas.
-    *   El **MLOps Engineer** debe crear un Pull Request (o merge) integrando todas las ramas a `main`.
-    *   **Resuelvan conflictos juntos** si dos personas tocaron el mismo archivo (ej. `requirements.txt` o `main.py`).
-5.  **Prueba Final:** Ejecuten `python -m src.main` en la rama `main`. Si corre, ¡misión cumplida!
-
----
-
-## 📂 Estructura de Carpetas
-
-```text
-churn-mlops-project/
-├── config/
-│   └── params.yaml          # Configuración centralizada
-├── data/
-│   ├── raw/                 # WA_Fn-UseC_-Telco-Customer-Churn.csv (NO SUBIR)
-│   └── processed/           # (Opcional) Datos limpios
-├── src/
-│   ├── __init__.py
-│   ├── data_loader.py       # Rol: Data Engineer
-│   ├── model_trainer.py     # Rol: ML Engineer
-│   ├── main.py              # Rol: MLOps Engineer
-│   └── predict.py           # Rol: QA Engineer
-├── tests/
-│   ├── __init__.py
-│   └── test_pipeline.py     # Rol: QA Engineer
-├── models/                  # Modelos .pkl generados (NO SUBIR o subir solo el final)
-├── requirements.txt         # Dependencias
-├── .gitignore               # Reglas de exclusión
-└── README.md                # Este archivo
 ```
 
+*Esto generará los datos limpios en la carpeta `data/processed/` y el modelo entrenado en `models/`.*
+
+**2. Ejecutar Inferencia (Producción)**
+Para probar el modelo guardado prediciendo el comportamiento de un cliente de prueba:
+
+```bash
+python -m src.predict
+
+```
+
+**3. Correr las Pruebas Unitarias (QA)**
+Para validar que el pipeline funciona correctamente a nivel de código:
+
+```bash
+python -m unittest tests/test_pipeline.py
+
+```
+
+## 📊 Resultados del Mejor Modelo
+
+Durante las pruebas, se evaluaron dos algoritmos: **Random Forest** y **Logistic Regression**.
+
+El mejor desempeño general para la detección de Churn (priorizando la captura de casos positivos mediante el Recall) lo obtuvo la **Regresión Logística**, superando al Random Forest en ambas métricas principales:
+
+* **Accuracy (Exactitud):** 82.11%
+* **Recall (Sensibilidad):** 60.05%
+* **F1-Score:** 64.00%
+
+*(Nota: Para futuras iteraciones, se recomienda aplicar un escalado de variables (`StandardScaler`) a las columnas numéricas para optimizar la convergencia del algoritmo).*
+
 ---
 
-## ✅ Checklist de Entrega
+## 🤖 Contribución de LLM (Inteligencia Artificial)
 
-*   [ ] El comando `python -m src.main` ejecuta todo el pipeline sin errores.
-*   [ ] El archivo `config/params.yaml` existe y controla los hiperparámetros.
-*   [ ] Hay al menos 2 modelos diferentes implementados en el código.
-*   [ ] El script `predict.py` carga el modelo y hace una predicción de ejemplo.
-*   [ ] El historial de Git muestra contribuciones de los 4 miembros del equipo.
-*   [ ] El `README.md` final incluye los resultados obtenidos (Accuracy/Recall del mejor modelo).
+Este proyecto fue desarrollado y estructurado con la asistencia de un Modelo de Lenguaje Grande (LLM). Las principales contribuciones del LLM a lo largo del ciclo de vida del proyecto incluyeron:
 
-
-
-¡Éxito con la clase! Es un ejercicio excelente para ver quién realmente entiende la integración de sistemas. 🚀
+1. **Diseño de Arquitectura MLOps:** Orientación sobre cómo separar correctamente las responsabilidades (Data Loader, Model Trainer, Predictor) evitando scripts monolíticos.
+2. **Gestión de Configuración (YAML):** Ayuda para estructurar el archivo `params.yaml` de forma dinámica, permitiendo cambiar de algoritmos y sus hiperparámetros (ej. de `RandomForest` a `LogisticRegression`) sin modificar el código fuente.
+3. **Resolución de Errores (Debugging):** Diagnóstico y solución de problemas comunes en Python, como errores de rutas absolutas y relativas (`ModuleNotFoundError`), excepciones de diccionario (`KeyError` en la lectura del YAML), y manejo de errores por hiperparámetros no compatibles en `scikit-learn`.
+4. **Desarrollo de Pruebas y Producción (QA):** Redacción de pruebas unitarias estandarizadas usando la librería nativa `unittest` y creación de un script de predicción robusto con manejo adecuado de excepciones (ej. verificar la existencia del archivo `.pkl`).
