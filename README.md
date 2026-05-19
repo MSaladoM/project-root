@@ -86,9 +86,9 @@ Usé ChatGPT para resolver problemas de Git, estructurar el flujo de MLOps y val
 
 ### Jose Lomeli — QA & Production Engineer
 
-El principal desafío fue validar que todos los módulos funcionaran correctamente juntos y preparar pruebas básicas que aseguraran la estabilidad del pipeline. También se trabajó en documentación y estructura de producción del proyecto.
+El principal desafío fue validar que el usuario pudiera poner un nuevo cliente y este lo predijera sin necesidad de cambiar el formato.
 
-Usé ChatGPT para generar ideas de pruebas unitarias, manejo de errores en predicciones y revisión de documentación técnica.
+Usé ChatGPT para generar partes del codigo mas tediosas, manejo de errores en predicciones y creacion de plantillas.
 
 
 # 🛠️ Tecnologías utilizadas
