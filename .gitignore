@@ -57,6 +57,7 @@ cover/
 
 # Raw data
 data/raw/*.csv
+data_churn.zip
 
 # Processed data outputs
 data/processed/*.csv
