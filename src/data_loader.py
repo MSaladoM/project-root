@@ -1,2 +1,5 @@
-def load_data(): 
+def load_data():
+	"""
+    Carga el dataset y lo divide en train/test.
+    """
 	pass
