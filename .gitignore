@@ -58,6 +58,9 @@ cover/
 # Raw data
 data/raw/*.csv
 
+# Processed data outputs
+data/processed/*.csv
+
 # Django stuff:
 *.log
 local_settings.py
