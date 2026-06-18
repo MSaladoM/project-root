@@ -34,6 +34,18 @@ Cada miembro del equipo es responsable de un módulo específico. Deben definir 
     *   **División:** Separar en Train/Test usando `test_size` y `random_state` definidos en `config/params.yaml`.
 *   **Entregable:** Función `load_and_preprocess_data(config)` que retorna `X_train, X_test, y_train, y_test`.
 
+#### LLM Contribution - Data Engineer (Carlo)
+
+Para el desarrollo del componente de ingeniería de datos, se utilizó **Gemini** como asistente de desarrollo y arquitectura. A continuación se detallan las tareas específicas en las que colaboró la herramienta:
+
+* **Estructuración del Pipeline de Datos (ETL):** Se utilizó para diseñar la lógica de la función `load_data` en `src/data_loader.py`, asegurando que la conversión de `TotalCharges` a numérico (manejando espacios vacíos con `errors='coerce'`) e imputación de medianas se realizara correctamente en Pandas.
+* **Prevención de Fuga de Datos (*Data Leakage*):** Ayudó a definir la arquitectura del flujo de preprocesamiento, estableciendo que la división del dataset (`train_test_split`) debe ejecutarse **antes** del cálculo de la mediana e imputación de nulos, garantizando la integridad del modelo.
+* **Integración de Configuración Dinámica:** Colaboró en el diseño de la lectura del diccionario `config` mapeado desde `params.yaml` para evitar valores fijos (*hardcoding*) en los parámetros `test_size` y `random_state`.
+* **Soporte y Flujo de Git:** Se utilizó como guía paso a paso para resolver la anidación accidental de repositorios locales, la creación limpia de la rama `feature/data-engineer` en el fork, y el manejo de historial mediante buenas prácticas de commits.
+
+
+
+
 ### 2. 🧠 ML Engineer (`src/model_trainer.py`)
 **Tu misión:** Experimentar con algoritmos y guardar el mejor modelo.
 
@@ -43,6 +55,17 @@ Cada miembro del equipo es responsable de un módulo específico. Deben definir 
     *   Calcular métricas clave: **Accuracy**, **Recall** (crítico para Churn) y **F1-Score**.
     *   Guardar el modelo entrenado en la carpeta `models/` usando `joblib`.
 *   **Entregable:** Función `train_and_save_model(X_train, y_train, X_test, y_test, config)` que guarda el `.pkl` y retorna un diccionario de métricas.
+
+### LLM Contribution - ML Engineer (Víctor)
+
+
+* **Arreglo de datos:** Quitamos dummies en `data_loader.py`.
+* **Creación de modelos:** Programé `trainer_model.py`.
+* **Algoritmos:** Entrenamos Random Forest, Regresión Logística y SVM.
+* **Automatización:** El código crea la carpeta `models` solo.
+* **Control de versiones:** Aplicamos comandos Git en VS Code.
+
+
 
 ### 3. ⚙️ MLOps Engineer (`src/main.py` y `config/`)
 **Tu misión:** Orquestar el flujo y gestionar la configuración externa.
@@ -122,3 +145,28 @@ churn-mlops-project/
 
 
 ¡Éxito con la clase! Es un ejercicio excelente para ver quién realmente entiende la integración de sistemas. 🚀
+
+
+
+
+
+
+
+
+
+############# Nota1 (victor)  lo de aca abajo es una pequeña guia para hacer commits desde la terminal de VSC
+
+# Entra a tu carpeta Local
+cd "C:\Users\User\Desktop\Proyecto Colaborativo MLOps Predicción de Churn (Abandono de Clientes)"
+
+# Crea y cambia de rama
+git checkout -b feature/ml-engineer    (qui depende del rol de cada uno)
+
+# Agrega los archivos modificados
+git add src/data_loader.py src/trainer_model.py README.md        (estos son los que actualicé)
+
+# Guarda los cambios
+git commit -m "Agrega modelos y ajusta loader"         el titulo de las modificaciones y/o actualizaciones que hicimos
+
+# Sube al repositorio
+git push -u origin feature/ml-engineer
